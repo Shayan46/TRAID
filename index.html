@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRAID — Crafted For The Few</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0A0A0A;
+    --gold: #D4AF37;
+    --gold-dim: rgba(212,175,55,0.15);
+    --gold-glow: rgba(212,175,55,0.4);
+    --text: #F5F5F5;
+    --secondary: #8A8A8A;
+    --border: rgba(245,245,245,0.08);
+  }
+
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; overflow-x: hidden; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-weight: 300; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 2px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); }
+
+  /* ── SECTIONS ── */
+  section { min-height: 100vh; scroll-snap-align: start; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+
+  /* ════════════════════════════
+     HERO
+  ════════════════════════════ */
+  #hero { background: var(--bg); flex-direction: column; text-align: center; }
+
+  /* Triangle canvas */
+  #triangle-canvas { position: absolute; inset: 0; z-index: 0; }
+
+  .hero-inner { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 28px; }
+
+  .hero-wordmark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(80px, 16vw, 180px);
+    letter-spacing: 0.25em;
+    color: var(--text);
+    line-height: 1;
+    text-shadow: 0 0 80px rgba(212,175,55,0.12);
+  }
+
+  .hero-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(14px, 2.2vw, 20px);
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-weight: 300;
+  }
+
+  .hero-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(13px, 1.6vw, 17px);
+    color: var(--secondary);
+    font-style: italic;
+    letter-spacing: 0.04em;
+    margin-top: 4px;
+  }
+
+  .btn-enter {
+    margin-top: 16px;
+    padding: 14px 52px;
+    border: 1px solid var(--gold);
+    background: transparent;
+    color: var(--gold);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.4s, color 0.4s, box-shadow 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-enter::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+    z-index: -1;
+  }
+  .btn-enter:hover::before { transform: scaleX(1); }
+  .btn-enter:hover { color: var(--bg); box-shadow: 0 0 30px var(--gold-glow); }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 2;
+  }
+  .scroll-hint span { font-size: 9px; letter-spacing: 0.3em; color: var(--secondary); text-transform: uppercase; }
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse { 0%,100%{opacity:0.3;transform:scaleY(0.8)} 50%{opacity:1;transform:scaleY(1)} }
+
+  /* ════════════════════════════
+     CINEMATIC VIDEO SECTION
+  ════════════════════════════ */
+  #cinematic { background: #000; }
+
+  .video-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #0d0d0d 0%, #111 50%, #0a0a0a 100%);
+    overflow: hidden;
+  }
+
+  /* Simulated cinematic still */
+  .cinematic-still {
+    width: 100%;
+    height: 100%;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 60%, rgba(212,175,55,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 80% 40%, rgba(212,175,55,0.03) 0%, transparent 70%),
+      linear-gradient(to bottom, #050505 0%, #111 40%, #0a0a0a 100%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 8%;
+    padding-bottom: 12%;
+  }
+
+  /* Silhouette riders */
+  .rider {
+    width: 3px;
+    border-radius: 2px;
+    background: linear-gradient(to top, rgba(212,175,55,0.5), transparent);
+    position: relative;
+    animation: riderFloat 4s ease-in-out infinite;
+  }
+  .rider::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28px;
+    height: 50px;
+    background: radial-gradient(ellipse at center, rgba(212,175,55,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .rider:nth-child(1) { height: 120px; animation-delay: 0s; }
+  .rider:nth-child(2) { height: 140px; animation-delay: 0.7s; }
+  .rider:nth-child(3) { height: 125px; animation-delay: 1.4s; }
+
+  @keyframes riderFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+  .cinematic-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 30%, rgba(0,0,0,0.5) 100%);
+    z-index: 1;
+  }
+
+  .cinematic-text {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 20px;
+    padding: 40px;
+  }
+
+  .fade-line {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(18px, 3.5vw, 36px);
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .fade-line.visible { opacity: 1; transform: translateY(0); }
+  .fade-line.gold { color: var(--gold); font-style: italic; }
+  .fade-line-divider { width: 40px; height: 1px; background: var(--gold); opacity: 0; transition: opacity 0.9s ease 0.4s; margin: 8px auto; }
+  .fade-line-divider.visible { opacity: 0.6; }
+
+  /* ════════════════════════════
+     THE CHAPTERS
+  ════════════════════════════ */
+  #chapters { background: var(--bg); flex-direction: column; padding: 80px 5%; }
+
+  .section-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.45em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 60px;
+    text-align: center;
+  }
+
+  .chapters-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    width: 100%;
+    max-width: 1100px;
+  }
+
+  .chapter-card {
+    background: #0e0e0e;
+    border: 1px solid var(--border);
+    padding: 60px 40px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.4s;
+  }
+  .chapter-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--gold-dim) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .chapter-card:hover::before { opacity: 1; }
+  .chapter-card:hover { border-color: rgba(212,175,55,0.3); }
+
+  .chapter-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 20px;
+    opacity: 0.7;
+  }
+
+  .chapter-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .chapter-desc {
+    font-size: 12px;
+    color: var(--secondary);
+    letter-spacing: 0.05em;
+    line-height: 1.7;
+  }
+
+  .chapter-arrow {
+    position: absolute;
+    bottom: 32px;
+    right: 32px;
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(212,175,55,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .chapter-card:hover .chapter-arrow { border-color: var(--gold); transform: translate(2px,-2px); }
+  .chapter-arrow svg { width: 12px; height: 12px; stroke: var(--gold); fill: none; }
+
+  /* Storybook open animation */
+  .chapter-inner-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.6s ease;
+    border-top: 0 solid var(--border);
+  }
+  .chapter-card.open .chapter-inner-content { max-height: 200px; border-top: 1px solid var(--border); margin-top: 20px; padding-top: 20px; }
+  .chapter-inner-content ul { list-style: none; }
+  .chapter-inner-content li {
+    font-size: 12px;
+    color: var(--secondary);
+    letter-spacing: 0.12em;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  .chapter-inner-content li:last-child { border-bottom: none; }
+
+  /* ════════════════════════════
+     FOUNDER TRIANGLE
+  ════════════════════════════ */
+  #founders { background: #050505; flex-direction: column; gap: 60px; }
+
+  .founders-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(11px,1.5vw,14px);
+    letter-spacing: 0.45em;
+    color: var(--gold);
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .triangle-wrapper {
+    position: relative;
+    width: 320px;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #founder-svg { width: 100%; height: 100%; overflow: visible; }
+
+  .founder-tag {
+    position: absolute;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--secondary);
+    transition: color 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .founder-tag.active { color: var(--gold); }
+
+  .founder-quote {
+    text-align: center;
+    max-width: 480px;
+    padding: 0 24px;
+  }
+  .founder-quote p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(15px, 2vw, 20px);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--secondary);
+    letter-spacing: 0.03em;
+    line-height: 1.7;
+    transition: color 0.3s;
+    min-height: 60px;
+  }
+  .founder-quote .founder-name-display {
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    margin-top: 16px;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.4s, transform 0.4s;
+  }
+  .founder-quote .founder-name-display.visible { opacity: 1; transform: translateY(0); }
+
+  /* ════════════════════════════
+     PRODUCT PAGE
+  ════════════════════════════ */
+  #product { background: var(--bg); padding: 80px 5%; flex-direction: row; align-items: stretch; gap: 0; }
+
+  .product-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    max-width: 1100px;
+    width: 100%;
+    align-items: center;
+  }
+
+  .product-editorial {
+    background: #0e0e0e;
+    aspect-ratio: 3/4;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Editorial fabric texture simulation */
+  .product-editorial-bg {
+    width: 100%;
+    height: 100%;
+    background:
+      radial-gradient(ellipse 70% 80% at 50% 50%, #1a1a1a 0%, #0d0d0d 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .product-tee-graphic {
+    width: 160px;
+    height: 180px;
+    position: relative;
+  }
+
+  .product-tee-graphic svg { width: 100%; height: 100%; }
+
+  .product-editorial-badge {
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    color: var(--secondary);
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    padding: 8px 20px;
+  }
+
+  .product-info {
+    padding: 60px 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 32px;
+  }
+
+  .product-batch {
+    font-size: 9px;
+    letter-spacing: 0.45em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .product-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+  }
+
+  .product-specs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .product-spec {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .product-spec-label { font-size: 10px; letter-spacing: 0.25em; color: var(--secondary); text-transform: uppercase; }
+  .product-spec-val { font-size: 12px; color: var(--text); letter-spacing: 0.1em; }
+
+  .product-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+  }
+
+  .product-philosophy {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(13px, 1.6vw, 16px);
+    font-style: italic;
+    color: var(--secondary);
+    line-height: 1.6;
+    letter-spacing: 0.03em;
+  }
+
+  .btn-claim {
+    padding: 16px 0;
+    border: 1px solid var(--gold);
+    background: transparent;
+    color: var(--gold);
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+  }
+  .btn-claim::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s;
+    z-index: 0;
+  }
+  .btn-claim:hover::after { transform: scaleX(1); }
+  .btn-claim span { position: relative; z-index: 1; transition: color 0.4s; }
+  .btn-claim:hover span { color: var(--bg); }
+
+  /* ════════════════════════════
+     DROP MECHANIC
+  ════════════════════════════ */
+  #drop { background: #030303; flex-direction: column; text-align: center; gap: 48px; padding: 80px 5%; }
+
+  .drop-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 8vw, 100px);
+    letter-spacing: 0.2em;
+    color: var(--text);
+    line-height: 1;
+  }
+  .drop-title span { color: var(--gold); }
+
+  .drop-counter {
+    display: flex;
+    gap: 2px;
+    align-items: stretch;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 700px;
+  }
+
+  .drop-piece {
+    background: #0d0d0d;
+    border: 1px solid var(--border);
+    padding: 32px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    min-width: 160px;
+    transition: border-color 0.3s;
+    cursor: default;
+  }
+  .drop-piece:hover { border-color: rgba(212,175,55,0.25); }
+
+  .drop-piece-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(14px, 1.8vw, 18px);
+    font-weight: 300;
+    letter-spacing: 0.08em;
+  }
+  .drop-remaining {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .drop-bar { height: 1px; background: var(--border); position: relative; }
+  .drop-bar-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: var(--gold);
+    transition: width 1.5s ease;
+  }
+
+  .waitlist-form {
+    display: flex;
+    gap: 2px;
+    max-width: 480px;
+    width: 100%;
+  }
+  .waitlist-input {
+    flex: 1;
+    background: #0e0e0e;
+    border: 1px solid var(--border);
+    border-right: none;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    padding: 14px 20px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .waitlist-input:focus { border-color: rgba(212,175,55,0.4); }
+  .waitlist-input::placeholder { color: var(--secondary); font-size: 10px; letter-spacing: 0.2em; }
+  .waitlist-btn {
+    background: var(--gold);
+    color: var(--bg);
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    cursor: pointer;
+    transition: background 0.3s;
+    white-space: nowrap;
+  }
+  .waitlist-btn:hover { background: #c9a42e; }
+
+  /* ════════════════════════════
+     LEGACY SCORE
+  ════════════════════════════ */
+  #legacy { background: var(--bg); flex-direction: column; padding: 80px 5%; gap: 60px; }
+
+  .legacy-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 5vw, 56px);
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    text-align: center;
+  }
+  .legacy-title em { color: var(--gold); font-style: italic; }
+
+  .legacy-tiers {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    max-width: 900px;
+    width: 100%;
+  }
+
+  .legacy-tier {
+    background: #0d0d0d;
+    border: 1px solid var(--border);
+    padding: 40px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.4s;
+    cursor: default;
+  }
+  .legacy-tier::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+  }
+  .legacy-tier:hover::after { transform: scaleX(1); }
+  .legacy-tier:hover { border-color: rgba(212,175,55,0.2); }
+
+  .tier-symbol {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+  }
+  .tier-symbol svg { width: 28px; height: 28px; }
+
+  .tier-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.15em;
+    color: var(--text);
+  }
+
+  .tier-range {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .tier-desc {
+    font-size: 11px;
+    color: var(--secondary);
+    line-height: 1.7;
+    letter-spacing: 0.04em;
+  }
+
+  /* ════════════════════════════
+     FOOTER
+  ════════════════════════════ */
+  footer {
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    padding: 60px 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    scroll-snap-align: end;
+  }
+
+  .footer-wordmark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 6vw, 64px);
+    letter-spacing: 0.3em;
+    color: var(--text);
+  }
+
+  .footer-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 12px;
+    letter-spacing: 0.4em;
+    color: var(--secondary);
+    text-transform: uppercase;
+    font-style: italic;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .footer-link {
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    color: var(--secondary);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.3s;
+    text-decoration: none;
+  }
+  .footer-link:hover { color: var(--gold); }
+
+  .footer-bottom {
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: rgba(138,138,138,0.4);
+    text-transform: uppercase;
+  }
+
+  .footer-triangle { opacity: 0.2; margin: 8px 0; }
+
+  /* ════════════════════════════
+     FIXED NAV
+  ════════════════════════════ */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    mix-blend-mode: normal;
+  }
+
+  nav::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.95) 0%, transparent 100%);
+    z-index: -1;
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.35em;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+  }
+  .nav-link {
+    font-size: 9px;
+    letter-spacing: 0.35em;
+    color: var(--secondary);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.3s;
+    border: none;
+    background: none;
+  }
+  .nav-link:hover { color: var(--gold); }
+
+  .nav-cart {
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: var(--secondary);
+    cursor: pointer;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-cart:hover { color: var(--gold); }
+
+  /* ════════════════════════════
+     RESPONSIVE
+  ════════════════════════════ */
+  @media (max-width: 768px) {
+    html { scroll-snap-type: none; }
+    .chapters-grid { grid-template-columns: 1fr; }
+    .product-inner { grid-template-columns: 1fr; }
+    .product-editorial { aspect-ratio: 1/1; }
+    .legacy-tiers { grid-template-columns: 1fr 1fr; }
+    .nav-links { display: none; }
+    .product-info { padding: 40px 24px; }
+    .chapter-card { padding: 40px 28px; }
+  }
+
+  @media (max-width: 480px) {
+    .legacy-tiers { grid-template-columns: 1fr; }
+    .drop-counter { flex-direction: column; }
+    .waitlist-form { flex-direction: column; }
+    .waitlist-input { border-right: 1px solid var(--border); }
+  }
+
+  /* ════════════════════════════
+     REVEAL ANIMATIONS
+  ════════════════════════════ */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { transition: none; opacity: 1; transform: none; }
+    .fade-line { transition: none; opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- FIXED NAV -->
+<nav>
+  <div class="nav-logo">TRAID</div>
+  <div class="nav-links">
+    <button class="nav-link" onclick="document.getElementById('chapters').scrollIntoView({behavior:'smooth'})">Chapters</button>
+    <button class="nav-link" onclick="document.getElementById('product').scrollIntoView({behavior:'smooth'})">Collection</button>
+    <button class="nav-link" onclick="document.getElementById('drop').scrollIntoView({behavior:'smooth'})">Drops</button>
+    <button class="nav-link" onclick="document.getElementById('founders').scrollIntoView({behavior:'smooth'})">House</button>
+  </div>
+  <div class="nav-cart">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    <span>Bag (0)</span>
+  </div>
+</nav>
+
+<!-- ════ HERO ════ -->
+<section id="hero">
+  <canvas id="triangle-canvas"></canvas>
+  <div class="hero-inner">
+    <div class="hero-wordmark">TRAID</div>
+    <div class="hero-sub">Crafted For The Few</div>
+    <div class="hero-quote">"Not everyone is meant to wear TRAID."</div>
+    <button class="btn-enter" onclick="document.getElementById('cinematic').scrollIntoView({behavior:'smooth'})">
+      Enter The House
+    </button>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ════ CINEMATIC ════ -->
+<section id="cinematic">
+  <div class="video-bg">
+    <div class="cinematic-still">
+      <div class="rider"></div>
+      <div class="rider"></div>
+      <div class="rider"></div>
+    </div>
+  </div>
+  <div class="cinematic-overlay"></div>
+  <div class="cinematic-text">
+    <p class="fade-line" data-delay="0">Three founders.</p>
+    <div class="fade-line-divider" data-delay="300"></div>
+    <p class="fade-line" data-delay="400">One vision.</p>
+    <div class="fade-line-divider" data-delay="700"></div>
+    <p class="fade-line gold" data-delay="900">Built for those who choose substance over attention.</p>
+  </div>
+</section>
+
+<!-- ════ CHAPTERS ════ -->
+<section id="chapters" style="flex-direction:column; padding:120px 5%;">
+  <div class="section-eyebrow reveal">The Chapters</div>
+  <div class="chapters-grid">
+    <div class="chapter-card reveal" onclick="this.classList.toggle('open')">
+      <span class="chapter-num">Chapter I</span>
+      <div class="chapter-title">Essentials</div>
+      <p class="chapter-desc">The foundation. Garments built to outlast every season you'll live through.</p>
+      <div class="chapter-inner-content">
+        <ul>
+          <li>The Founder Tee</li>
+          <li>The Legacy Tee</li>
+          <li>The House Crewneck</li>
+        </ul>
+      </div>
+      <div class="chapter-arrow">
+        <svg viewBox="0 0 12 12"><path d="M2 10L10 2M10 2H4M10 2v6" stroke-width="1.2" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+
+    <div class="chapter-card reveal" style="transition-delay:0.15s" onclick="this.classList.toggle('open')">
+      <span class="chapter-num">Chapter II</span>
+      <div class="chapter-title">Outerwear</div>
+      <p class="chapter-desc">Armour for the deliberate. Each piece a statement of restraint.</p>
+      <div class="chapter-inner-content">
+        <ul>
+          <li>The III Hoodie</li>
+          <li>The Patrons Jacket</li>
+          <li>The House Coach</li>
+        </ul>
+      </div>
+      <div class="chapter-arrow">
+        <svg viewBox="0 0 12 12"><path d="M2 10L10 2M10 2H4M10 2v6" stroke-width="1.2" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+
+    <div class="chapter-card reveal" style="transition-delay:0.3s" onclick="this.classList.toggle('open')">
+      <span class="chapter-num">Chapter III</span>
+      <div class="chapter-title">Limited Releases</div>
+      <p class="chapter-desc">27 pieces. No restock. No apology. You know when you know.</p>
+      <div class="chapter-inner-content">
+        <ul>
+          <li>Drop 01 — Founders Edition</li>
+          <li>Drop 02 — Coming 2026</li>
+          <li>Join Waitlist →</li>
+        </ul>
+      </div>
+      <div class="chapter-arrow">
+        <svg viewBox="0 0 12 12"><path d="M2 10L10 2M10 2H4M10 2v6" stroke-width="1.2" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ FOUNDERS TRIANGLE ════ -->
+<section id="founders">
+  <div class="founders-title reveal">The III — Founding Philosophy</div>
+  <div class="triangle-wrapper">
+    <svg id="founder-svg" viewBox="0 0 300 280" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <!-- Triangle sides as separate paths for individual hover -->
+      <!-- Left side: Bhargav -->
+      <path id="side-left" d="M 150 30 L 30 250" stroke="#333" stroke-width="1.5" fill="none" data-founder="0" class="tri-side"/>
+      <!-- Right side: Shayan -->
+      <path id="side-right" d="M 150 30 L 270 250" stroke="#333" stroke-width="1.5" fill="none" data-founder="1" class="tri-side"/>
+      <!-- Bottom: Danish -->
+      <path id="side-bottom" d="M 30 250 L 270 250" stroke="#333" stroke-width="1.5" fill="none" data-founder="2" class="tri-side"/>
+      <!-- Fill -->
+      <polygon points="150,30 30,250 270,250" fill="rgba(212,175,55,0.03)" stroke="none"/>
+      <!-- Vertices -->
+      <circle cx="150" cy="30" r="3" fill="#333" class="tri-vertex" id="v-top"/>
+      <circle cx="30" cy="250" r="3" fill="#333" class="tri-vertex" id="v-left"/>
+      <circle cx="270" cy="250" r="3" fill="#333" class="tri-vertex" id="v-right"/>
+      <!-- Center mark -->
+      <circle cx="150" cy="177" r="2" fill="rgba(212,175,55,0.4)"/>
+    </svg>
+    <!-- Labels -->
+    <div class="founder-tag" style="top:-8px;left:50%;transform:translateX(-50%)" id="tag-bhargav">Bhargav</div>
+    <div class="founder-tag" style="bottom:-8px;left:-20px" id="tag-danish">Danish</div>
+    <div class="founder-tag" style="bottom:-8px;right:-20px" id="tag-shayan">Shayan</div>
+  </div>
+
+  <div class="founder-quote reveal">
+    <p id="founder-text">Three sides. One house. Hover to explore the founding vision.</p>
+    <div class="founder-name-display" id="founder-name-display"></div>
+  </div>
+</section>
+
+<!-- ════ PRODUCT ════ -->
+<section id="product">
+  <div class="product-inner">
+    <div class="product-editorial">
+      <div class="product-editorial-bg">
+        <!-- T-shirt SVG silhouette -->
+        <div class="product-tee-graphic">
+          <svg viewBox="0 0 160 180" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 20 30 L 0 70 L 30 80 L 30 170 L 130 170 L 130 80 L 160 70 L 140 30 Q 120 20 100 25 Q 80 10 60 25 Q 40 20 20 30 Z"
+              fill="#1a1a1a" stroke="rgba(212,175,55,0.2)" stroke-width="1"/>
+            <!-- Triangle mark on chest -->
+            <polygon points="80,65 68,88 92,88" fill="none" stroke="rgba(212,175,55,0.6)" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="product-editorial-badge">The Founders Edition</div>
+      </div>
+    </div>
+    <div class="product-info">
+      <div class="product-batch reveal">Limited Batch — Drop 01</div>
+      <div class="product-name reveal">TRAID<br>Oversized Tee</div>
+      <div class="product-specs reveal">
+        <div class="product-spec">
+          <span class="product-spec-label">Weight</span>
+          <span class="product-spec-val">280 GSM</span>
+        </div>
+        <div class="product-spec">
+          <span class="product-spec-label">Material</span>
+          <span class="product-spec-val">100% Cotton</span>
+        </div>
+        <div class="product-spec">
+          <span class="product-spec-label">Run</span>
+          <span class="product-spec-val">100 Pieces</span>
+        </div>
+        <div class="product-spec">
+          <span class="product-spec-label">Availability</span>
+          <span class="product-spec-val" style="color:var(--gold)">27 Remaining</span>
+        </div>
+      </div>
+      <div class="product-price reveal">₹999</div>
+      <div class="product-philosophy reveal">Made for years, not seasons.</div>
+      <button class="btn-claim reveal"><span>Claim Yours</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ════ DROP MECHANIC ════ -->
+<section id="drop">
+  <div class="drop-title reveal">Drop <span>01</span></div>
+  <p class="reveal" style="font-size:12px;letter-spacing:0.3em;color:var(--secondary);text-transform:uppercase">Chapter I — The Founders Edition</p>
+  <div class="drop-counter">
+    <div class="drop-piece reveal">
+      <div class="drop-piece-name">The Founder Tee</div>
+      <div class="drop-remaining">27 / 100 Remaining</div>
+      <div class="drop-bar"><div class="drop-bar-fill" style="width:27%"></div></div>
+    </div>
+    <div class="drop-piece reveal" style="transition-delay:0.1s">
+      <div class="drop-piece-name">The Legacy Tee</div>
+      <div class="drop-remaining">41 / 100 Remaining</div>
+      <div class="drop-bar"><div class="drop-bar-fill" style="width:41%"></div></div>
+    </div>
+    <div class="drop-piece reveal" style="transition-delay:0.2s">
+      <div class="drop-piece-name">The III Hoodie</div>
+      <div class="drop-remaining">12 / 100 Remaining</div>
+      <div class="drop-bar"><div class="drop-bar-fill" style="width:12%"></div></div>
+    </div>
+    <div class="drop-piece reveal" style="transition-delay:0.3s">
+      <div class="drop-piece-name">The House Crewneck</div>
+      <div class="drop-remaining">Sold Out</div>
+      <div class="drop-bar"><div class="drop-bar-fill" style="width:0%;background:#444"></div></div>
+    </div>
+  </div>
+  <div class="waitlist-form reveal">
+    <input class="waitlist-input" type="email" placeholder="Your email — be the first to know">
+    <button class="waitlist-btn">Join Waitlist</button>
+  </div>
+</section>
+
+<!-- ════ LEGACY SCORE ════ -->
+<section id="legacy">
+  <div class="legacy-title reveal">The <em>Legacy</em> Score</div>
+  <div class="legacy-tiers">
+    <div class="legacy-tier reveal">
+      <div class="tier-symbol">
+        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="14,4 4,22 24,22" stroke="#444" stroke-width="1" fill="none"/>
+        </svg>
+      </div>
+      <div class="tier-name">Initiate</div>
+      <div class="tier-range">0 — 100 pts</div>
+      <div class="tier-desc">The beginning. Every legacy starts here. Access to general drops.</div>
+    </div>
+    <div class="legacy-tier reveal" style="transition-delay:0.1s">
+      <div class="tier-symbol">
+        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="14,4 4,22 24,22" stroke="#666" stroke-width="1.2" fill="rgba(212,175,55,0.05)"/>
+        </svg>
+      </div>
+      <div class="tier-name">Member</div>
+      <div class="tier-range">100 — 500 pts</div>
+      <div class="tier-desc">Early access to drops. Invitations to House events.</div>
+    </div>
+    <div class="legacy-tier reveal" style="transition-delay:0.2s">
+      <div class="tier-symbol">
+        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="14,4 4,22 24,22" stroke="var(--gold)" stroke-width="1.4" fill="rgba(212,175,55,0.08)"/>
+        </svg>
+      </div>
+      <div class="tier-name">Patron</div>
+      <div class="tier-range">500 — 1000 pts</div>
+      <div class="tier-desc">Reserved allocations. Personal styling. Founder access.</div>
+    </div>
+    <div class="legacy-tier reveal" style="transition-delay:0.3s; border-color:rgba(212,175,55,0.2)">
+      <div class="tier-symbol">
+        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="14,4 4,22 24,22" stroke="var(--gold)" stroke-width="1.8" fill="rgba(212,175,55,0.15)" filter="url(#glow)"/>
+          <polygon points="14,8 7.5,20 20.5,20" stroke="rgba(212,175,55,0.4)" stroke-width="0.8" fill="none"/>
+        </svg>
+      </div>
+      <div class="tier-name" style="color:var(--gold)">Legacy Holder</div>
+      <div class="tier-range">1000+ pts</div>
+      <div class="tier-desc">You are the House. Co-creation rights. Unnamed in public rolls.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ FOOTER ════ -->
+<footer>
+  <div class="footer-wordmark">TRAID</div>
+  <div class="footer-triangle">
+    <svg width="40" height="36" viewBox="0 0 40 36" fill="none">
+      <polygon points="20,2 2,34 38,34" stroke="#D4AF37" stroke-width="1" fill="none"/>
+    </svg>
+  </div>
+  <div class="footer-sub">Crafted For The Few</div>
+  <div class="footer-links">
+    <a class="footer-link" href="#">Instagram</a>
+    <a class="footer-link" href="#">Journal</a>
+    <a class="footer-link" href="#">Contact</a>
+    <a class="footer-link" href="#">Sizing</a>
+  </div>
+  <div class="footer-bottom">© 2026 TRAID — All rights reserved</div>
+</footer>
+
+<script>
+/* ════ TRIANGLE CANVAS — animated gold triangles ════ */
+(function() {
+  const canvas = document.getElementById('triangle-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, triangles = [];
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+
+  function makeTriangle() {
+    const x = Math.random() * W;
+    const y = Math.random() * H;
+    const size = 20 + Math.random() * 80;
+    const speed = 0.1 + Math.random() * 0.2;
+    const rot = Math.random() * Math.PI * 2;
+    const rotSpeed = (Math.random() - 0.5) * 0.003;
+    const alpha = 0.015 + Math.random() * 0.04;
+    return { x, y, size, speed, rot, rotSpeed, alpha, vy: -speed * 0.3 };
+  }
+
+  function init() {
+    for (let i = 0; i < 12; i++) {
+      const t = makeTriangle();
+      t.y = Math.random() * H;
+      triangles.push(t);
+    }
+  }
+
+  function drawTri(t) {
+    ctx.save();
+    ctx.translate(t.x, t.y);
+    ctx.rotate(t.rot);
+    ctx.strokeStyle = `rgba(212,175,55,${t.alpha})`;
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    const s = t.size;
+    ctx.moveTo(0, -s * 0.6);
+    ctx.lineTo(-s * 0.5, s * 0.4);
+    ctx.lineTo(s * 0.5, s * 0.4);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    triangles.forEach(t => {
+      t.rot += t.rotSpeed;
+      t.y += t.vy;
+      if (t.y < -t.size * 2) {
+        Object.assign(t, makeTriangle());
+        t.y = H + t.size;
+      }
+      drawTri(t);
+    });
+    requestAnimationFrame(animate);
+  }
+
+  resize();
+  init();
+  animate();
+  window.addEventListener('resize', resize);
+})();
+
+/* ════ CINEMATIC TEXT REVEAL on scroll ════ */
+(function() {
+  const lines = document.querySelectorAll('.fade-line, .fade-line-divider');
+  const section = document.getElementById('cinematic');
+
+  const obs = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) {
+      lines.forEach((el, i) => {
+        const delay = parseInt(el.dataset.delay || i * 300);
+        setTimeout(() => el.classList.add('visible'), delay);
+      });
+    } else {
+      lines.forEach(el => el.classList.remove('visible'));
+    }
+  }, { threshold: 0.4 });
+
+  obs.observe(section);
+})();
+
+/* ════ SCROLL REVEAL ════ */
+(function() {
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('in');
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => obs.observe(el));
+})();
+
+/* ════ FOUNDER TRIANGLE INTERACTION ════ */
+(function() {
+  const founders = [
+    {
+      name: 'Bhargav',
+      tagId: 'tag-bhargav',
+      side: 'side-left',
+      vertex: ['v-top', 'v-left'],
+      quote: '"Build what you wish existed. Then make it impossible to copy."'
+    },
+    {
+      name: 'Shayan',
+      tagId: 'tag-shayan',
+      side: 'side-right',
+      vertex: ['v-top', 'v-right'],
+      quote: '"Restraint is the most radical thing you can do in a world that won\'t stop screaming."'
+    },
+    {
+      name: 'Danish',
+      tagId: 'tag-danish',
+      side: 'side-bottom',
+      vertex: ['v-left', 'v-right'],
+      quote: '"Substance first. The rest is noise. Always was."'
+    }
+  ];
+
+  const sides = document.querySelectorAll('.tri-side');
+  const textEl = document.getElementById('founder-text');
+  const nameEl = document.getElementById('founder-name-display');
+
+  function reset() {
+    document.querySelectorAll('.tri-side').forEach(s => {
+      s.style.stroke = '#333';
+      s.style.strokeWidth = '1.5';
+    });
+    document.querySelectorAll('.tri-vertex').forEach(v => {
+      v.style.fill = '#333';
+    });
+    document.querySelectorAll('.founder-tag').forEach(t => t.classList.remove('active'));
+    nameEl.classList.remove('visible');
+    nameEl.textContent = '';
+    textEl.style.color = 'var(--secondary)';
+  }
+
+  function activate(founder) {
+    reset();
+    const sideEl = document.getElementById(founder.side);
+    sideEl.style.stroke = '#D4AF37';
+    sideEl.style.strokeWidth = '2';
+
+    founder.vertex.forEach(vid => {
+      const v = document.getElementById(vid);
+      v.style.fill = '#D4AF37';
+    });
+
+    const tagEl = document.getElementById(founder.tagId);
+    tagEl.classList.add('active');
+
+    textEl.textContent = founder.quote;
+    textEl.style.color = 'var(--text)';
+    nameEl.textContent = '— ' + founder.name;
+    nameEl.classList.add('visible');
+  }
+
+  sides.forEach(side => {
+    const idx = parseInt(side.dataset.founder);
+    side.style.cursor = 'pointer';
+    side.addEventListener('mouseenter', () => activate(founders[idx]));
+    side.addEventListener('mouseleave', () => {
+      reset();
+      textEl.textContent = 'Three sides. One house. Hover to explore the founding vision.';
+    });
+  });
+
+  // Also make tags interactive
+  founders.forEach(f => {
+    const tag = document.getElementById(f.tagId);
+    tag.style.cursor = 'pointer';
+    tag.addEventListener('mouseenter', () => activate(f));
+    tag.addEventListener('mouseleave', () => {
+      reset();
+      textEl.textContent = 'Three sides. One house. Hover to explore the founding vision.';
+    });
+  });
+})();
+
+/* ════ WAITLIST FORM ════ */
+document.querySelector('.waitlist-btn').addEventListener('click', function() {
+  const input = document.querySelector('.waitlist-input');
+  if (input.value.includes('@')) {
+    const form = document.querySelector('.waitlist-form');
+    form.innerHTML = '<p style="font-size:11px;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase">You\'re on the list. We\'ll be in touch.</p>';
+  } else {
+    input.style.borderColor = 'rgba(212,175,55,0.5)';
+    input.placeholder = 'Enter a valid email';
+    setTimeout(() => { input.style.borderColor = ''; }, 2000);
+  }
+});
+
+/* ════ BAR ANIMATION on scroll ════ */
+(function() {
+  const fills = document.querySelectorAll('.drop-bar-fill');
+  const widths = [];
+  fills.forEach(f => {
+    widths.push(f.style.width);
+    f.style.width = '0';
+  });
+  const section = document.getElementById('drop');
+  const obs = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) {
+      fills.forEach((f, i) => {
+        setTimeout(() => f.style.width = widths[i], i * 150);
+      });
+    }
+  }, { threshold: 0.3 });
+  obs.observe(section);
+})();
+</script>
+</body>
+</html>
